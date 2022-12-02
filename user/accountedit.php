@@ -1,65 +1,230 @@
-<?php
-$userrole = 'Standard User';
-$title = 'Account Settings';
-require '../login/misc/pagehead.php';
-$uid = $_SESSION['uid'];
-$usr = PHPLogin\UserHandler::pullUserById($uid);
-?>
-<script src="js/accountupdate.js"></script>
-<script src="../login/js/jquery.validate.min.js"></script>
-<script src="../login/js/additional-methods.min.js"></script>
-
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <title>Document</title>
+    <link href="css/index.css" rel="stylesheet">
+     <!-- Linck para os icons do footer-->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 </head>
 <body>
-  <?php require '../login/misc/pullnav.php'; ?>
-    <div class="container">
-        <div class="col-sm-4"></div>
-        <div class="col-sm-4">
-            <h2><?php echo $title;?></h2>
-            <form id="profileForm" enctype="multipart/form-data">
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <label for="username" class="label label-default">Username</label>
-                            <input type="text" class="form-control" name="username" id="username" value="<?php echo $usr['username']; ?>" disabled>
-                            <label for="email" class="label label-default">Email</label>
-                            <input type="text" class="form-control" name="email" id="email" value="<?php echo $usr['email']; ?>"> </div>
-                    </div>
-                </div>
-                <h4 class="form-signup-heading">Reset Password</h4>
-                <input name="id" id="id" placeholder="User Id" value="<?php echo $uid;?>" hidden>
-                <label for="password1" class="label label-default">Password</label>
-                <input name="password1" id="password1" type="password" class="form-control" placeholder="New Password">
-                <br>
-                <label for="password2" class="label label-default">Repeat Password</label>
-                <input name="password2" id="password2" type="password" class="form-control" placeholder="Repeat Password">
-                <br/>
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div id="message"></div>
-                            <button type="submit" class="btn btn-lg btn-primary btn-block" id="submitbtn">Submit</button>
-                        </div>
-                    </div>
-            </form>
+    <header>
+        <center>
+            <img src="img/logoo.png" >
+        </center>
+        
+        <div class="group">
+            <ul class="navegation">
+                <li><a href="index.php">Início</a></li>
+                <li><a href="instrumentos.php">Instrumentos</a></li>
+                <li><a href="acessorios.php">Acessórios</a></li>
+                <li><a href="#">Sobre nós</a></li>
+                <li><a href="login.php">Login</a></li>
+            </ul>
+            <div class="search">
+                <span class="icon">
+                    <ion-icon name="search-outline" class="searchBtn"></ion-icon>
+                  
+                    <ion-icon name="close-outline" class="closeBtn"></ion-icon>
+                </span>
             </div>
-            <input id="emailorig" value="<?php echo $usr['email']; ?>" hidden disabled></input>
+            <ion-icon name="menu-outline" class="menuToggle"></ion-icon> 
         </div>
-        <div class="col-sm-4"></div>
+        <div class="searchBox">
+            <input type="text" placeholder="O que está procurando?">
+        </div>
+    </header>
+
+    <h1>TESTE</h1>
+    <div>
+    <center>
+        <form  action="" method="post">
+            <h2>Cadastro de produtos</h2>
+            <br>
+            <div class="##">
+                
+                <input type="text" placeholder="Nome do item" name="nome" required>
+            </div>
+            <br>
+            <div class="input-group">
+                
+                <input type="text" placeholder="Marca do item" name="marca" required>
+            </div>
+            <br>
+            <div class="input-group">
+                
+                <input type="text" placeholder="Link da pagina" name="link" required>
+            </div>
+            <br>
+            <div class="input-group"> 
+                <select name="categoria" class="box">
+                    <option value="cordas">Cordas</option>
+                    <option value="metal">Metais </option>
+                    <option value="percusao">Percussões</option>
+                    <option value="teclas">teclas</option>
+                </select>
+            </div>
+            <br>
+              
+            <button class="btn-blue" type="submit"> <a input type="submit" value="Cadastrar" name="enviar" >Cadastrar produto</a></button>
+
+            <?php
+            require("db/conexao.php");
+
+            //$query = sprintf("SELECT * FROM violao");
+            // executa a query
+            //$dados = mysql_query($query, $con) or die(mysql_error());
+            // transforma os dados em um array
+            //$linha = mysql_fetch_assoc($dados);
+            // calcula quantos dados retornaram
+            //$total = mysql_num_rows($dados);
+            
+            if ((isset($_POST['nome'])) && (isset($_POST['marca'])) && (isset($_POST['categoria'])) && (isset($_POST['link']))) {
+                require("db/conexao.php");
+                $nome = $_POST['nome'];
+                $marca = $_POST['marca'];
+                $link = $_POST['link'];
+                $categoria = $_POST['categoria'];
+                
+                    // Perform query
+                    if($categoria == "cordas"){
+                        $sql2 = "select * from cordas where nome='$nome' ";
+                        $query = $con->query($sql2);
+                        $row = $query->num_rows;
+                        if($row == 0){
+                            $result = mysqli_query($con, "INSERT INTO cordas(nome, marca, link) VALUES('$nome','$marca', '$link')");
+                            echo "<div style=color:black> --------------Cadastrado com sucesso!---------------- </div>";
+                            //header("refresh:1;url=login.php" );
+                            //header("Location: favoritos.php");
+                            // Free result set 
+                        }else{
+                            echo"<br><br>";
+                            echo "<div style=color:black> --------------Produto já cadastrado!---------------- </div>";
+                            echo"<br>";
+                        };           
+                    };
+                    if($categoria == "metal"){
+                        $sql2 = "select * from metal where nome='$nome' ";
+                        $query = $con->query($sql2);
+                        $row = $query->num_rows;
+                        if($row == 0){
+                            $result = mysqli_query($con, "INSERT INTO metal(nome, marca) VALUES('$nome','$marca')");
+                            echo "<div style=color:black> --------------Cadastrado com sucesso!---------------- </div>";
+                            //header("refresh:1;url=login.php" );
+                            //header("Location: favoritos.php");
+                            // Free result set  
+                        }else{
+                            echo"<br><br>";
+                            echo "<div style=color:black> --------------Produto já cadastrado!---------------- </div>";
+                            echo"<br>";
+                        };  
+                    }
+                    if($categoria == "percusao"){
+                        $sql2 = "select * from percusao where nome='$nome' ";
+                        $query = $con->query($sql2);
+                        $row = $query->num_rows;
+                        if($row == 0){
+                            $result = mysqli_query($con, "INSERT INTO percusao(nome, marca) VALUES('$nome','$marca')");
+                            echo "<div style=color:black> --------------Cadastrado com sucesso!---------------- </div>";
+                            //header("refresh:1;url=login.php" );
+                            //header("Location: favoritos.php");
+                            // Free result set   
+                        }else{
+                            echo"<br><br>";
+                            echo "<div style=color:black> --------------Produto já cadastrado!---------------- </div>";
+                            echo"<br>";
+                        }; 
+                    }
+                    if($categoria == "teclas"){
+                        $sql2 = "select * from teclas where nome='$nome' ";
+                        $query = $con->query($sql2);
+                        $row = $query->num_rows;
+                        if($row == 0){
+                            $result = mysqli_query($con, "INSERT INTO teclas(nome, marca) VALUES('$nome','$marca')");
+                            echo "<div style=color:white> --------------Cadastrado com sucesso!---------------- </div>";
+                            //header("refresh:1;url=login.php" );
+                            //header("Location: favoritos.php");
+                            // Free result set
+                        }else{
+                            echo"<br><br>";
+                            echo "<div style=color:black> --------------Produto já cadastrado!---------------- </div>";
+                            echo"<br>";
+                        };    
+                    }
+                }
+
+            //$pesquisanome = mysqli_query($con, "SELECT nome from cordas where id_produto='1'");
+            //$mostranome = $pesquisanome;
+
+            echo "<div style=color:black>"; 
+            echo $nome;
+            echo"<br>";
+            echo $marca;
+            echo"</div>";
+            ?>
+        </form>
+    </center>
     </div>
+
+    <footer>
+        <div class="footer-content">
+            <h3> Helper</h3>
+            <p>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
+
+            <ul class="socials">
+                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                <li><a href="#"><i class="fa fa-google plus"></i></a></li>
+                <li><a href="#"><i class="fa fa-youtube"></i></a></li>
+                <li><a href="#"><i class="fa fa-instagran"></i></a></li>
+
+
+
+            </ul>
+        </div>
+        <div class="footer-bottom">
+            <p>copyright &copy;2022 Helper<br><br>
+             designed by <span>J.Lucas Rodrigues, Gabriel Barreto, Thalyta Cerqueira, Eike Alexandre, J.Pedro Nogueira</span> 
+            </p>
+
+        </div> 
+       </footer>
+    <script  type = "module"  src = "https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js" > </script> 
+    <script  nomodule  src = "https://unpkg .com/ionicons@5.5.2/dist/ionicons/ionicons.js" > </script>
+
     <script>
-        $("#profileForm").validate({
-            rules: {
-                password1: {
-                    <?php if ((bool) $conf->password_policy_enforce == true) {
-    echo "minlength: ". $conf->password_min_length;
-};?>
-                }
-                , password2: {
-                     equalTo: "#password1"
-                }
-            }
-        });
+     let searchBtn = document.querySelector(".searchBtn");
+     let closeBtn = document.querySelector(".closeBtn");
+     let searchBox = document.querySelector(".searchBox");
+     let navegation = document.querySelector(".navegation");
+     let menuToggle = document.querySelector(".menuToggle");
+     let header = document.querySelector("header");
+
+
+     searchBtn.onclick = function(){
+        searchBox.classList.add('active');
+        closeBtn.classList.add('active');
+        searchBtn.classList.add('active');
+        menuToggle.classList.add('hide');
+        header.classList.remove('open');
+
+     } 
+
+     closeBtn.onclick = function(){
+        searchBox.classList.remove('active');
+        closeBtn.classList.remove('active');
+        searchBtn.classList.remove('active');
+        menuToggle.classList.remove('hide');
+
+     } 
+
+     menuToggle.onclick = function(){
+        header.classList.toggle('open');
+        searchBox.classList.remove('active');
+        closeBox.classList.remove('active');
+        searchBtn.classList.remove('active');
+     }
     </script>
+
+
 </body>
 </html>
